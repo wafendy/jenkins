@@ -1,37 +1,28 @@
 #!groovy
 
 pipeline {
-    agent { docker 'ruby' }
+    agent { label 'master' }
     stages {
-        stage('build') {
-            steps {
-                parallel (
-                    "Models" : {
-                        sh 'bin/rails test test/models'
-                    },
-                    "Controllers" : {
-                        sh 'bin/rails test test/controllers'
-                    }
-                )
+      stage('checkout repo') {
+        steps {
+          checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: "origin/single"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'single']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/wafendy/jenkins.git']]]
+        }
+      }
+      stage('build') {
+        steps {
+          parallel (
+            "Models" : {
+              dir ('single') {
+                sh 'bin/docker-test-1'
+              }
+            },
+            "Controllers" : {
+              dir ('single') {
+                sh 'bin/docker-test-2'
+              }
             }
+          )
         }
-    }
-    post {
-        success {
-            echo 'This will run only if successful'
-        }
-        failure {
-            echo 'This will run only if failed'
-        }
-        unstable {
-            echo 'This will run only if the run was marked as unstable'
-        }
-        changed {
-            echo 'This will run only if the state of the Pipeline has changed'
-            echo 'For example, if the Pipeline was previously failing but is now successful'
-        }
-        always {
-            echo 'This will always run'
-        }
+      }
     }
 }
