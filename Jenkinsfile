@@ -5,7 +5,8 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh 'bin/docker-test'
+                sh 'docker --version'
+                sh 'docker-compose build'
             }
         }
     }
