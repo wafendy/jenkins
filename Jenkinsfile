@@ -1,14 +1,9 @@
 pipeline {
-    agent {
-      node {
-        label 'master'
-      }
-    }
+    agent { docker 'ruby' }
     stages {
         stage('build') {
             steps {
                 sh 'ruby --version'
-                sh 'docker --version'
             }
         }
     }
