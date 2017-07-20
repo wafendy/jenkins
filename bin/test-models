@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -eu
+
+# update rails dependencies
+bundle check || bundle install
+
+export RAILS_ENV=test
+
+# wait until db is up
+bundle exec rake db:drop
+bundle exec rake db:create
+bundle exec rake db:migrate
+
+bundle exec rails test test/models
