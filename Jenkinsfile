@@ -7,10 +7,10 @@ pipeline {
             steps {
                 parallel (
                     "Models" : {
-                        bin/rails test test/models
+                        sh 'bin/rails test test/models'
                     },
                     "Controllers" : {
-                        bin/rails test test/controllers
+                        sh 'bin/rails test test/controllers'
                     }
                 )
             }
