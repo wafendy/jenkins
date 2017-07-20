@@ -1,7 +1,7 @@
 #!groovy
 
 pipeline {
-    agent { label 'master' }
+    agent none
     stages {
       stage('checkout repo') {
         steps {
