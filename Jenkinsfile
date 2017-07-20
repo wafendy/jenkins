@@ -6,6 +6,14 @@ pipeline {
         stage('build') {
             steps {
                 sh 'ruby --version'
+                parallel (
+                    "Windows" : {
+                        echo 'done'
+                    },
+                    "Linux" : {
+                        echo 'done'
+                    }
+                )
             }
         }
     }
