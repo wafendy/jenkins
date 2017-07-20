@@ -6,11 +6,11 @@ pipeline {
         stage('build') {
             steps {
                 parallel (
-                    "Windows" : {
-                        echo 'done'
+                    "Models" : {
+                        bin/rails test test/models
                     },
-                    "Linux" : {
-                        echo 'done'
+                    "Controllers" : {
+                        bin/rails test test/controllers
                     }
                 )
             }
