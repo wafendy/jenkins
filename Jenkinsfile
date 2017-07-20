@@ -14,26 +14,22 @@ pipeline {
             "Models" : {
               dir ('parallel') {
                 sh "docker-compose -p m.$env.BUILD_TAG -f docker-compose.yml build"
-                sh "docker-compose -p m.$env.BUILD_TAG -f docker-compose.yml run app"
-              }
-              post {
-                always {
-                  sh "docker-compose -p m.$env.BUILD_TAG -f docker-compose.yml down -v"
-                }
+                sh "docker-compose -p m.$env.BUILD_TAG -f docker-compose.yml run app-model"
               }
             },
             "Controllers" : {
               dir ('parallel') {
                 sh "docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml build"
-                sh "docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml run app"
-              }
-              post {
-                always {
-                  sh "docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml down -v"
-                }
+                sh "docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml run app-controller"
               }
             }
           )
+        }
+        post {
+          always {
+            sh "docker-compose -p m.$env.BUILD_TAG -f docker-compose.yml down -v"
+            sh "docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml down -v"
+          }
         }
       }
     }
