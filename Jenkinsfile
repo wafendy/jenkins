@@ -5,7 +5,6 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh 'ruby --version'
                 parallel (
                     "Windows" : {
                         echo 'done'
