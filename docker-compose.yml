@@ -1,0 +1,13 @@
+version: '2'
+services:
+  app:
+    build: .
+    command: ["bin/test"]
+    volumes:
+      - .:/app
+      - data-bundle:/bundle
+    environment:
+      BUNDLE_PATH: /bundle
+      RAILS_ENV: test
+volumes:
+  data-bundle:
