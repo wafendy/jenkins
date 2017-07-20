@@ -13,12 +13,24 @@ pipeline {
           parallel (
             "Models" : {
               dir ('parallel') {
-                sh 'bin/docker-test-1'
+                sh "docker-compose -p m.$env.BUILD_TAG -f docker-compose.yml build"
+                sh "docker-compose -p m.$env.BUILD_TAG -f docker-compose.yml run app"
+              }
+              post {
+                always {
+                  sh "docker-compose -p m.$env.BUILD_TAG -f docker-compose.yml down -v"
+                }
               }
             },
             "Controllers" : {
               dir ('parallel') {
-                sh 'bin/docker-test-2'
+                sh "docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml build"
+                sh "docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml run app"
+              }
+              post {
+                always {
+                  sh "docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml down -v"
+                }
               }
             }
           )
