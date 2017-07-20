@@ -5,19 +5,19 @@ pipeline {
     stages {
       stage('checkout repo') {
         steps {
-          checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: "origin/single"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'single']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/wafendy/jenkins.git']]]
+          checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: "origin/parallel"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'parallel']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/wafendy/jenkins.git']]]
         }
       }
       stage('build') {
         steps {
           parallel (
             "Models" : {
-              dir ('single') {
+              dir ('parallel') {
                 sh 'bin/docker-test-1'
               }
             },
             "Controllers" : {
-              dir ('single') {
+              dir ('parallel') {
                 sh 'bin/docker-test-2'
               }
             }
