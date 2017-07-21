@@ -15,10 +15,7 @@ pipeline {
       stage('Prepare') {
         steps {
           script {
-            checkout scm
-            sh "git --no-pager show -s --format='%s (%an <%ae>)' ${GIT_COMMIT} > GIT_MESSAGE"
-            GIT_MESSAGE_2 = readFile('GIT_MESSAGE').trim()
-            GIT_COMMIT_3 = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+            env.GIT_COMMIT_4 = 'hello'
           }
         }
       }
