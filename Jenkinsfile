@@ -12,14 +12,15 @@ pipeline {
         GIT_MESSAGE         = sh(returnStdout: true, script: 'git --no-pager show -s --format="%s (%an <%ae>) %H"').trim()
     }
     stages {
-      stage('Prepare') {
-        steps {
-          script {
-            env.TESTING1 = 'hello'
-            env.TESTING2 = 'hello there'
-          }
-        }
-      }
+      // Another way to set ENV variables
+      // stage('Prepare') {
+      //   steps {
+      //     script {
+      //       env.TESTING1 = 'hello'
+      //       env.TESTING2 = 'hello there'
+      //     }
+      //   }
+      // }
       stage('Print ENV') {
         steps {
           sh 'env | sort'
@@ -45,5 +46,34 @@ pipeline {
           }
         }
       }
+
+      stage('Deploy?') {
+        steps {
+          notifyHipchat('READY')
+
+          timeout(time: 4, unit: 'HOURS') {
+            input(id: env.GIT_REPO, message: 'Deploy to Staging?', ok: 'Deploy')
+          }
+        }
+        post {
+          success {
+            notifyHipchat('SUCCESS')
+          }
+          failure {
+            notifyHipchat('FAILURE')
+          }
+        }
+      }
     }
+}
+
+def notifyHipchat(String status) {
+  echo "[$buildStatus] HELLO THERE ++++++++++++++++++++++++++++++++++++++"
+  echo "[$buildStatus] HELLO THERE ++++++++++++++++++++++++++++++++++++++"
+  echo "[$buildStatus] HELLO THERE ++++++++++++++++++++++++++++++++++++++"
+  echo "[$buildStatus] HELLO THERE ++++++++++++++++++++++++++++++++++++++"
+  echo "[$buildStatus] HELLO THERE ++++++++++++++++++++++++++++++++++++++"
+  echo "[$buildStatus] HELLO THERE ++++++++++++++++++++++++++++++++++++++"
+  echo "[$buildStatus] HELLO THERE ++++++++++++++++++++++++++++++++++++++"
+  echo "[$buildStatus] HELLO THERE ++++++++++++++++++++++++++++++++++++++"
 }
