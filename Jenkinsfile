@@ -9,7 +9,7 @@ pipeline {
         STAGING_URL         = 'https://pob-stag1-console.pm-staging.net'
         GIT_COMMIT          = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
         GIT_COMMIT_SHORT    = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
-        GIT_MESSAGE         = sh(returnStdout: true, script: "git --no-pager show -s --format='%s (%an <%ae>)' ${GIT_COMMIT}").trim()
+        GIT_MESSAGE         = sh(returnStdout: true, script: 'git --no-pager show -s --format=\'%s (%an <%ae>)\'').trim()
     }
     stages {
       stage('Prepare') {
@@ -17,8 +17,7 @@ pipeline {
           script {
             checkout scm
             sh "git --no-pager show -s --format='%s (%an <%ae>)' ${GIT_COMMIT} > GIT_MESSAGE"
-            GIT_MESSAGE = readFile('GIT_MESSAGE').trim()
-            sh 'export GGIT_COMMIT=BALLS'
+            GIT_MESSAGE_2 = readFile('GIT_MESSAGE').trim()
             GIT_COMMIT_3 = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
           }
         }
