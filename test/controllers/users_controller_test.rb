@@ -30,4 +30,12 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     get users_hello_url
     assert_response :success
   end
+  
+  test "Create user with id 1 1" do
+    User.create(id: 1, first: 'First', last: 'Last')
+  end
+
+  test "Create user with id 1 2" do
+    User.create(id: 1, first: 'First', last: 'Last')
+  end
 end

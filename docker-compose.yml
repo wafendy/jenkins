@@ -18,6 +18,7 @@ services:
     environment:
       BUNDLE_PATH: /bundle
       RAILS_ENV: test
+      TEST_PIPE_NUMBER: M
   app-controller:
     build: .
     command: ["bin/test-controllers"]
@@ -27,5 +28,6 @@ services:
     environment:
       BUNDLE_PATH: /bundle
       RAILS_ENV: test
+      TEST_PIPE_NUMBER: C
 volumes:
   data-bundle:

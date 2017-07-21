@@ -33,4 +33,12 @@ class UserTest < ActiveSupport::TestCase
     user = User.new
     assert_not user.save, "Saved the user without a first name"
   end
+
+  test "Create user with id 1 1" do
+    User.create(id: 1, first: 'First', last: 'Last')
+  end
+
+  test "Create user with id 1 2" do
+    User.create(id: 1, first: 'First', last: 'Last')
+  end
 end
