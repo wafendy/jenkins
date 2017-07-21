@@ -21,9 +21,12 @@ pipeline {
             GIT_COMMIT_SHORT = readFile('GIT_COMMIT_SHORT').trim()
             sh "git --no-pager show -s --format='%s (%an <%ae>)' ${GIT_COMMIT} > GIT_MESSAGE"
             GIT_MESSAGE = readFile('GIT_MESSAGE').trim()
-
-            sh 'env | sort'
           }
+        }
+      }
+      stage('Print ENV') {
+        steps {
+          sh 'printenv'
         }
       }
       stage('Build') {
