@@ -22,6 +22,7 @@ pipeline {
             sh "git --no-pager show -s --format='%s (%an <%ae>)' ${GIT_COMMIT} > GIT_MESSAGE"
             GIT_MESSAGE = readFile('GIT_MESSAGE').trim()
             sh 'export GGIT_COMMIT=BALLS'
+            export GGIT_COMMIT = 'STRAIGHT'
           }
         }
       }
