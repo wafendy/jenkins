@@ -7,6 +7,7 @@ pipeline {
         AWS_DEFAULT_REGION  = 'us-east-1'
         GIT_REPO            = 'poblano'
         STAGING_URL         = 'https://pob-stag1-console.pm-staging.net'
+        GIT_COMMIT_2        = sh 'git rev-parse HEAD'
     }
     stages {
       stage('Prepare') {
