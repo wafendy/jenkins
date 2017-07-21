@@ -21,12 +21,13 @@ pipeline {
             GIT_COMMIT_SHORT = readFile('GIT_COMMIT_SHORT').trim()
             sh "git --no-pager show -s --format='%s (%an <%ae>)' ${GIT_COMMIT} > GIT_MESSAGE"
             GIT_MESSAGE = readFile('GIT_MESSAGE').trim()
+            sh 'export GGIT_COMMIT=BALLS'
           }
         }
       }
       stage('Print ENV') {
         steps {
-          sh 'printenv'
+          sh 'env | sort'
         }
       }
       stage('Build') {
