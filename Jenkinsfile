@@ -14,7 +14,10 @@ pipeline {
     stages {
       stage('Prepare') {
         steps {
-          env.GIT_COMMIT_5 = 'hello'
+          script {
+            env.TESTING1 = 'hello'
+            env.TESTING2 = 'hello there'
+          }
         }
       }
       stage('Print ENV') {
