@@ -9,7 +9,7 @@ pipeline {
         STAGING_URL         = 'https://pob-stag1-console.pm-staging.net'
         GIT_COMMIT          = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
         GIT_COMMIT_SHORT    = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
-        GIT_MESSAGE         = sh(returnStdout: true, script: 'git --no-pager show -s --format=\'%s (%an <%ae>)\'').trim()
+        GIT_MESSAGE         = sh(returnStdout: true, script: 'git --no-pager show -s --format="%s (%an <%ae>) %H"').trim()
     }
     stages {
       stage('Prepare') {
