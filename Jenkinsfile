@@ -7,7 +7,9 @@ pipeline {
         AWS_DEFAULT_REGION  = 'us-east-1'
         GIT_REPO            = 'poblano'
         STAGING_URL         = 'https://pob-stag1-console.pm-staging.net'
-        GIT_COMMIT_2        = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+        GIT_COMMIT          = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+        GIT_COMMIT_SHORT    = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+        GIT_MESSAGE         = sh(returnStdout: true, script: "git --no-pager show -s --format='%s (%an <%ae>)' ${GIT_COMMIT}").trim()
     }
     stages {
       stage('Prepare') {
