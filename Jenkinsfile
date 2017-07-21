@@ -3,6 +3,11 @@
 pipeline {
     agent { label 'master' }
     stages {
+      stage('init') {
+        steps {
+          sh 'env | sort'
+        }
+      }
       stage('build') {
         steps {
           parallel (
