@@ -67,7 +67,7 @@ pipeline {
     }
 }
 
-def notifyHipchat(String status) {
+def notifyHipchat(String buildStatus) {
   echo "[$buildStatus] HELLO THERE ++++++++++++++++++++++++++++++++++++++"
   echo "[$buildStatus] HELLO THERE ++++++++++++++++++++++++++++++++++++++"
   echo "[$buildStatus] HELLO THERE ++++++++++++++++++++++++++++++++++++++"
