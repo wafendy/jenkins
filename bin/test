@@ -12,4 +12,9 @@ bundle exec rake db:drop
 bundle exec rake db:create
 bundle exec rake db:migrate
 
-bundle exec rails test
+if (( $# != 1 ))
+then
+  bundle exec rails test
+else
+  bundle exec rails test test/$@
+fi

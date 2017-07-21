@@ -14,13 +14,13 @@ pipeline {
             "Models" : {
               dir ('parallel') {
                 sh "docker-compose -p m.$env.BUILD_TAG -f docker-compose.yml build"
-                sh "docker-compose -p m.$env.BUILD_TAG -f docker-compose.yml run app-model"
+                sh "TEST_PIPE_NUMBER=models docker-compose -p m.$env.BUILD_TAG -f docker-compose.yml run app"
               }
             },
             "Controllers" : {
               dir ('parallel') {
                 sh "docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml build"
-                sh "docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml run app-controller"
+                sh "TEST_PIPE_NUMBER=controllers docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml run app"
               }
             }
           )

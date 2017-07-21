@@ -2,32 +2,12 @@ version: '2'
 services:
   app:
     build: .
-    command: ["bin/test"]
+    command: ["bin/test", "${TEST_PIPE_NUMBER}"]
     volumes:
       - .:/app
       - data-bundle:/bundle
     environment:
       BUNDLE_PATH: /bundle
       RAILS_ENV: test
-  app-model:
-    build: .
-    command: ["bin/test-models"]
-    volumes:
-      - .:/app
-      - data-bundle:/bundle
-    environment:
-      BUNDLE_PATH: /bundle
-      RAILS_ENV: test
-      TEST_PIPE_NUMBER: M
-  app-controller:
-    build: .
-    command: ["bin/test-controllers"]
-    volumes:
-      - .:/app
-      - data-bundle:/bundle
-    environment:
-      BUNDLE_PATH: /bundle
-      RAILS_ENV: test
-      TEST_PIPE_NUMBER: C
 volumes:
   data-bundle:
