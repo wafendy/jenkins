@@ -16,15 +16,10 @@ pipeline {
         steps {
           script {
             checkout scm
-            sh 'git rev-parse HEAD > GIT_COMMIT'
-            // TODO Deprecate this when Maven supports GIT_COMMIT as global variable
-            GIT_COMMIT = readFile('GIT_COMMIT').trim()
-            sh 'git rev-parse --short HEAD > GIT_COMMIT_SHORT'
-            GIT_COMMIT_SHORT = readFile('GIT_COMMIT_SHORT').trim()
             sh "git --no-pager show -s --format='%s (%an <%ae>)' ${GIT_COMMIT} > GIT_MESSAGE"
             GIT_MESSAGE = readFile('GIT_MESSAGE').trim()
             sh 'export GGIT_COMMIT=BALLS'
-            GIT_COMMIT_3 = sh 'git rev-parse HEAD'
+            GIT_COMMIT_3 = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
           }
         }
       }
