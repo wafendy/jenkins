@@ -12,15 +12,15 @@ pipeline {
         GIT_MESSAGE         = sh(returnStdout: true, script: 'git --no-pager show -s --format="%s (%an <%ae>) %H"').trim()
     }
     stages {
-      stage('Prepare') {
-        steps {
-          sh "docker network create -d bridge net.$env.BUILD_TAG"
-          sh "docker run -p 3306 --network net.$env.BUILD_TAG --network-alias mysqldb --name mysql.$env.BUILD_TAG -e MYSQL_ROOT_PASSWORD=secret -d mysql:5.6.28"
-        }
-      }
       stage('Build') {
         steps {
           sh "docker build . -t app.$env.BUILD_TAG"
+        }
+      }
+      stage('Prepare DB') {
+        steps {
+          sh "docker network create -d bridge net.$env.BUILD_TAG"
+          sh "docker run --network net.$env.BUILD_TAG --network-alias mysqldb --name mysql.$env.BUILD_TAG -e MYSQL_ROOT_PASSWORD=secret -d mysql:5.6.28"
           sh "docker run --rm --network net.$env.BUILD_TAG app.$env.BUILD_TAG bin/wait-for-mysql"
         }
       }
