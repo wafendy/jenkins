@@ -44,8 +44,8 @@ pipeline {
         }
         post {
           always {
-            // sh "docker-compose -p m.$env.BUILD_TAG -f docker-compose.yml down -v"
-            // sh "docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml down -v"
+            sh "docker-compose -p m.$env.BUILD_TAG -f docker-compose.yml down -v"
+            sh "docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml down -v"
             // notifyAll(currentBuild.result)
           }
         }
