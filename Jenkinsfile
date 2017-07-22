@@ -20,7 +20,7 @@ pipeline {
             env.DB_PORT = sh(returnStdout: true, script: "docker port mysql.$env.BUILD_TAG 3306 | awk -F':' '{print \$2}'").trim()
             env.DB_IP = sh(returnStdout: true, script: "docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql.$env.BUILD_TAG").trim()
           }
-          sleep(10000)
+          sleep(10)
           // sh "bin/wait-for localhost:$env.DB_PORT -- echo 'MySQL is up and ready'"
         }
       }
