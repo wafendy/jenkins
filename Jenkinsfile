@@ -65,15 +65,15 @@ pipeline {
       // }
     }
 
-    post {
-      always {
-        sh "docker container stop mysql.$env.BUILD_TAG"
-        sh "docker container rm mysql.$env.BUILD_TAG"
-        sh "docker image rm app.$env.BUILD_TAG"
-
-        // Need to remove app image
-      }
-    }
+    // post {
+    //   always {
+    //     sh "docker container stop mysql.$env.BUILD_TAG"
+    //     sh "docker container rm mysql.$env.BUILD_TAG"
+    //     sh "docker image rm app.$env.BUILD_TAG"
+    //
+    //     // Need to remove app image
+    //   }
+    // }
 }
 
 def notifyAll(String status) {
