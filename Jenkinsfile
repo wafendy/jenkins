@@ -12,9 +12,10 @@ pipeline {
         GIT_MESSAGE         = sh(returnStdout: true, script: 'git --no-pager show -s --format="%s (%an <%ae>) %H"').trim()
     }
     stages {
-      stage('Init DB') {
+      stage('Init') {
         steps {
-          sh "docker run -p 3306 --name mysql.$env.BUILD_TAG -e MYSQL_ROOT_PASSWORD=secret -d mysql:5.6.28"
+          sh "docker network create -d bridge net.$env.BUILD_TAG"
+          sh "docker run -p 3306 --network net.$env.BUILD_TAG --name mysql.$env.BUILD_TAG -e MYSQL_ROOT_PASSWORD=secret -d mysql:5.6.28"
           script {
             env.DB_PORT = sh(returnStdout: true, script: "docker port mysql.$env.BUILD_TAG 3306 | awk -F':' '{print \$2}'").trim()
           }
@@ -30,17 +31,17 @@ pipeline {
         steps {
           sh 'env | sort'
           sh 'docker ps -a'
-          sh "docker run -e RAILS_ENV=test --link mysql.$env.BUILD_TAG:mysql app.$env.BUILD_TAG printenv"
+          sh "docker run --rm -e RAILS_ENV=test --link mysql.$env.BUILD_TAG:mysql app.$env.BUILD_TAG printenv"
         }
       }
       stage('Test') {
         steps {
           parallel (
             "Models" : {
-              sh "docker run -e RAILS_ENV=test --link mysql.$env.BUILD_TAG:mysql app.$env.BUILD_TAG bin/test models"
+              sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test --link mysql.$env.BUILD_TAG:mysql app.$env.BUILD_TAG bin/test models"
             },
             "Controllers" : {
-              sh "docker run -e RAILS_ENV=test --link mysql.$env.BUILD_TAG:mysql app.$env.BUILD_TAG bin/test models"
+              sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test --link mysql.$env.BUILD_TAG:mysql app.$env.BUILD_TAG bin/test models"
             }
           )
         }
@@ -65,15 +66,14 @@ pipeline {
       // }
     }
 
-    // post {
-    //   always {
-    //     sh "docker container stop mysql.$env.BUILD_TAG"
-    //     sh "docker container rm mysql.$env.BUILD_TAG"
-    //     sh "docker image rm app.$env.BUILD_TAG"
-    //
-    //     // Need to remove app image
-    //   }
-    // }
+    post {
+      always {
+        sh "docker container stop mysql.$env.BUILD_TAG"
+        sh "docker container rm mysql.$env.BUILD_TAG"
+        // sh "docker image rm app.$env.BUILD_TAG"
+        sh "docker network rm net.$env.BUILD_TAG"
+      }
+    }
 }
 
 def notifyAll(String status) {
