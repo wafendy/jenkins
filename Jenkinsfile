@@ -18,6 +18,7 @@ pipeline {
           sh "docker run -p 3306 --network net.$env.BUILD_TAG --network-alias mysqldb --name mysql.$env.BUILD_TAG -e MYSQL_ROOT_PASSWORD=secret -d mysql:5.6.28"
           script {
             env.DB_PORT = sh(returnStdout: true, script: "docker port mysql.$env.BUILD_TAG 3306 | awk -F':' '{print \$2}'").trim()
+            env.DB_IP = sh(returnStdout: true, script: "docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' myswl.$env.BUILD_TAG").trim()
           }
           sh "bin/wait-for localhost:$env.DB_PORT -- echo 'MySQL is up and ready'"
         }
@@ -38,7 +39,7 @@ pipeline {
             "Models" : {
               sh 'docker ps -a'
               sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG ping -w 2 mysqldb"
-              sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG bin/test models"
+              sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG -e DB_IP=$env.DB_IP bin/test models"
             },
             "Controllers" : {
               sh 'docker ps -a'
