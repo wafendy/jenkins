@@ -38,7 +38,7 @@ pipeline {
             "Models" : {
               sh 'docker ps -a'
               sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG ping -w 2 mysqldb"
-              // sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG bin/test models"
+              sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG bin/test models"
             },
             "Controllers" : {
               sh 'docker ps -a'
