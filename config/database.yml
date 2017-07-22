@@ -20,7 +20,10 @@ development:
 test:
   <<: *default
   database: jenkins_test<%= ENV['TEST_PIPE_NUMBER'] %>
-  url: <%= ENV['DATABASE_URL'] %>
+  username: root
+  password: secret
+  host: <%= ENV['MYSQL_PORT_3306_TCP_ADDR'] %>
+  port: <%= ENV['MYSQL_PORT_3306_TCP_PORT'] %>
 
 production:
   <<: *default

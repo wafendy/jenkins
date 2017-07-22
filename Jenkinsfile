@@ -14,7 +14,7 @@ pipeline {
     stages {
       stage('Init DB') {
         steps {
-          sh "docker run -d -p 3306 --name mysql.$env.BUILD_TAG -e MYSQL_ROOT_PASSWORD=secret mysql:5.6.28"
+          sh "docker run -p 3306 --name mysql.$env.BUILD_TAG -e MYSQL_ROOT_PASSWORD=secret -d mysql:5.6.28"
           script {
             env.DB_PORT = sh(returnStdout: true, script: "docker port mysql.db5 3306 | awk -F':' '{print \$2}'").trim()
           }
@@ -28,19 +28,24 @@ pipeline {
       }
       stage('Build') {
         steps {
+          sh "docker build . -t app.$env.BUILD_TAG"
+        }
+      }
+      stage('Test') {
+        steps {
           parallel (
             "Models" : {
-              sh "TEST_PIPE_NUMBER=models docker-compose -p m.$env.BUILD_TAG -f docker-compose.yml up"
+              sh "docker run -e RAILS_ENV=test --link mysql.$env.BUILD_TAG:mysql app.$env.BUILD_TAG bin/test models"
             },
             "Controllers" : {
-              sh "TEST_PIPE_NUMBER=controllers docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml up"
+              sh "docker run -e RAILS_ENV=test --link mysql.$env.BUILD_TAG:mysql app.$env.BUILD_TAG bin/test models"
             }
           )
         }
         post {
           always {
-            sh "docker-compose -p m.$env.BUILD_TAG -f docker-compose.yml down -v"
-            sh "docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml down -v"
+            // sh "docker-compose -p m.$env.BUILD_TAG -f docker-compose.yml down -v"
+            // sh "docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml down -v"
             // notifyAll(currentBuild.result)
           }
         }
@@ -69,6 +74,7 @@ pipeline {
       always {
         sh "docker container stop mysql.$env.BUILD_TAG"
         sh "docker container rm mysql.$env.BUILD_TAG"
+        // Need to remove app image
       }
     }
 }
