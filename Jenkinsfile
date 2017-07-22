@@ -21,14 +21,15 @@ pipeline {
           sh "bin/wait-for localhost:$env.DB_PORT -- echo 'MySQL is up and ready'"
         }
       }
-      stage('Print ENV') {
-        steps {
-          sh 'env | sort'
-        }
-      }
       stage('Build') {
         steps {
           sh "docker build . -t app.$env.BUILD_TAG"
+        }
+      }
+      stage('Print ENV') {
+        steps {
+          sh 'env | sort'
+          sh 'docker ps -a'
         }
       }
       stage('Test') {
