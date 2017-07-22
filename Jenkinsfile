@@ -46,13 +46,6 @@ pipeline {
         }
       }
 
-      post {
-        always {
-          sh "docker container stop mysql.$env.BUILD_TAG"
-          sh "docker container rm mysql.$env.BUILD_TAG"
-        }
-      }
-
       // stage('Deploy?') {
       //   steps {
       //     notifyHipchat('READY')
@@ -71,6 +64,13 @@ pipeline {
       //   }
       // }
     }
+
+    post {
+      always {
+        sh "docker container stop mysql.$env.BUILD_TAG"
+        sh "docker container rm mysql.$env.BUILD_TAG"
+      }
+    }    
 }
 
 def notifyAll(String status) {
