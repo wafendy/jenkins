@@ -21,12 +21,10 @@ pipeline {
         steps {
           parallel (
             "Models" : {
-              sh "docker-compose -p m.$env.BUILD_TAG -f docker-compose.yml build"
-              sh "TEST_PIPE_NUMBER=models docker-compose -p m.$env.BUILD_TAG -f docker-compose.yml run app"
+              sh "TEST_PIPE_NUMBER=models docker-compose -p m.$env.BUILD_TAG -f docker-compose.yml up"
             },
             "Controllers" : {
-              sh "docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml build"
-              sh "TEST_PIPE_NUMBER=controllers docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml run app"
+              sh "TEST_PIPE_NUMBER=controllers docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml up"
             }
           )
         }
