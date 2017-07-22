@@ -3,7 +3,7 @@ FROM ruby:2.4.1
 ENV APP_ROOT /app
 ENV BUNDLE_PATH /bundle
 
-RUN apt-get update && apt-get install -y nodejs sqlite libsqlite3-dev build-essential
+RUN apt-get update && apt-get install -y nodejs mysql-client build-essential
 
 RUN mkdir /bundle
 

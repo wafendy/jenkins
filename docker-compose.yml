@@ -1,13 +1,21 @@
 version: '2'
 services:
+  db:
+    image: mysql:5.6.28
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
   app:
     build: .
     command: ["bin/test", "${TEST_PIPE_NUMBER}"]
     volumes:
       - .:/app
       - data-bundle:/bundle
+    links:
+      - db
     environment:
       BUNDLE_PATH: /bundle
       RAILS_ENV: test
+      DATABASE_URL: mysql2://root:secret@db/jenkins_test
 volumes:
+  data-mysql:
   data-bundle:
