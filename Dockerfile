@@ -11,6 +11,7 @@ RUN mkdir $APP_ROOT
 WORKDIR $APP_ROOT
 ADD Gemfile /app/Gemfile
 ADD Gemfile.lock /app/Gemfile.lock
-ADD . $APP_ROOT
 
 RUN bundle check || bundle install
+
+ADD . $APP_ROOT

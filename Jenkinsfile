@@ -12,6 +12,13 @@ pipeline {
         GIT_MESSAGE         = sh(returnStdout: true, script: 'git --no-pager show -s --format="%s (%an <%ae>) %H"').trim()
     }
     stages {
+      stage('Init DB') {
+        steps {
+          sh "docker run -d -p --name mysql.$env.BUILD_TAG -e MYSQL_ROOT_PASSWORD=secret mysql:5.6.28"
+          sh "bin/wait-for"
+          env.DB_PORT = sh(returnStdout: true, script: "docker port mysql.db5 3306 | awk -F':' '{print $2}'").trim()
+        }
+      }
       stage('Print ENV') {
         steps {
           sh 'env | sort'
@@ -34,6 +41,13 @@ pipeline {
             sh "docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml down -v"
             // notifyAll(currentBuild.result)
           }
+        }
+      }
+
+      post {
+        always {
+          sh "docker container stop mysql.$env.BUILD_TAG"
+          sh "docker container rm mysql.$env.BUILD_TAG"
         }
       }
 
