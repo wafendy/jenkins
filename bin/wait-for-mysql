@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "Waiting for mysql"
+until mysql -h mysqldb -P 3306 -uroot --password=secret &> /dev/null
+do
+  printf "."
+  sleep 1
+done
+
+echo -e "\nmysql is ready"

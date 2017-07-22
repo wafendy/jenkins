@@ -22,7 +22,7 @@ test:
   database: jenkins_test_<%= ENV['HOSTNAME'] %>
   username: root
   password: secret
-  host: <%= ENV['DB_IP'] %>
+  host: mysqldb
   port: 3306
 
 production:
