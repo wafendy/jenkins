@@ -30,6 +30,7 @@ pipeline {
         steps {
           sh 'env | sort'
           sh 'docker ps -a'
+          sh "docker run -e RAILS_ENV=test --link mysql.$env.BUILD_TAG:mysql app.$env.BUILD_TAG printenv"
         }
       }
       stage('Test') {
@@ -42,13 +43,6 @@ pipeline {
               sh "docker run -e RAILS_ENV=test --link mysql.$env.BUILD_TAG:mysql app.$env.BUILD_TAG bin/test models"
             }
           )
-        }
-        post {
-          always {
-            sh "docker-compose -p m.$env.BUILD_TAG -f docker-compose.yml down -v"
-            sh "docker-compose -p c.$env.BUILD_TAG -f docker-compose.yml down -v"
-            // notifyAll(currentBuild.result)
-          }
         }
       }
 
@@ -75,6 +69,8 @@ pipeline {
       always {
         sh "docker container stop mysql.$env.BUILD_TAG"
         sh "docker container rm mysql.$env.BUILD_TAG"
+        sh "docker image rm app.$env.BUILD_TAG"
+
         // Need to remove app image
       }
     }
