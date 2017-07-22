@@ -15,7 +15,7 @@ pipeline {
       stage('Init') {
         steps {
           sh "docker network create -d bridge net.$env.BUILD_TAG"
-          sh "docker run -p 3306 --network net.$env.BUILD_TAG --name mysql.$env.BUILD_TAG -e MYSQL_ROOT_PASSWORD=secret -d mysql:5.6.28"
+          sh "docker run -p 3306 --network net.$env.BUILD_TAG --network-alias mysqldb --name mysql.$env.BUILD_TAG -e MYSQL_ROOT_PASSWORD=secret -d mysql:5.6.28"
           script {
             env.DB_PORT = sh(returnStdout: true, script: "docker port mysql.$env.BUILD_TAG 3306 | awk -F':' '{print \$2}'").trim()
           }
@@ -31,17 +31,16 @@ pipeline {
         steps {
           sh 'env | sort'
           sh 'docker ps -a'
-          sh "docker run --rm -e RAILS_ENV=test --link mysql.$env.BUILD_TAG:mysql app.$env.BUILD_TAG printenv"
         }
       }
       stage('Test') {
         steps {
           parallel (
             "Models" : {
-              sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test --link mysql.$env.BUILD_TAG:mysql app.$env.BUILD_TAG bin/test models"
+              sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG bin/test models"
             },
             "Controllers" : {
-              sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test --link mysql.$env.BUILD_TAG:mysql app.$env.BUILD_TAG bin/test models"
+              sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG bin/test controllers"
             }
           )
         }
