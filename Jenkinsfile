@@ -38,9 +38,6 @@ pipeline {
           parallel (
             "Models" : {
               sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG bin/test models"
-            },
-            "Controllers" : {
-              sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG bin/test controllers"
             }
           )
         }
