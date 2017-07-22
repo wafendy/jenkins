@@ -16,7 +16,7 @@ pipeline {
         steps {
           sh "docker run -p 3306 --name mysql.$env.BUILD_TAG -e MYSQL_ROOT_PASSWORD=secret -d mysql:5.6.28"
           script {
-            env.DB_PORT = sh(returnStdout: true, script: "docker port mysql.db5 3306 | awk -F':' '{print \$2}'").trim()
+            env.DB_PORT = sh(returnStdout: true, script: "docker port mysql.$env.BUILD_TAG 3306 | awk -F':' '{print \$2}'").trim()
           }
           sh "bin/wait-for localhost:$env.DB_PORT -- echo 'MySQL is up and ready'"
         }
