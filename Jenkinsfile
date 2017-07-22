@@ -12,7 +12,7 @@ pipeline {
         GIT_MESSAGE         = sh(returnStdout: true, script: 'git --no-pager show -s --format="%s (%an <%ae>) %H"').trim()
     }
     stages {
-      stage('Init') {
+      stage('Prepare') {
         steps {
           sh "docker network create -d bridge net.$env.BUILD_TAG"
           sh "docker run -p 3306 --network net.$env.BUILD_TAG --network-alias mysqldb --name mysql.$env.BUILD_TAG -e MYSQL_ROOT_PASSWORD=secret -d mysql:5.6.28"
@@ -30,14 +30,19 @@ pipeline {
       stage('Print ENV') {
         steps {
           sh 'env | sort'
-          sh 'docker ps -a'
         }
       }
       stage('Test') {
         steps {
           parallel (
             "Models" : {
-              sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG bin/test models"
+              sh 'docker ps -a'
+              sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test -ti app.$env.BUILD_TAG ping -w 2 mysqldb"
+              // sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG bin/test models"
+            },
+            "Controllers" : {
+              sh 'docker ps -a'
+              sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test -ti app.$env.BUILD_TAG ping -w 2 mysqldb"
             }
           )
         }
