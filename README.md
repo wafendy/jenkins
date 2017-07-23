@@ -1,24 +1,7 @@
-# README
+# Parallel Testing using Docker in Jenkins
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Sample code on how to perform parallel testing with Docker
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+1. Use user-defined-network instead of link (deprecated)
+2. Use manual docker run instead of docker-compose
+3. Properly do clean up in post actions
