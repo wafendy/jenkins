@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Waiting for mysql"
-until mysql -h db -P 3306 -uroot --password=secret &> /dev/null
+until mysql -h mysqldb -P 3306 -uroot --password=secret &> /dev/null
 do
   printf "."
   sleep 1
