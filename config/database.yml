@@ -19,11 +19,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: jenkins_test_<%= ENV['HOSTNAME'] %>
-  username: root
-  password: secret
-  host: mysqldb
-  port: 3306
+  url: mysql2://root:secret@mysqldb:3306/jenkins_test_<%= ENV['HOSTNAME'] %>
 
 production:
   <<: *default
