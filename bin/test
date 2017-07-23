@@ -8,8 +8,11 @@ bundle check || bundle install
 export RAILS_ENV=test
 
 # wait until db is up
+echo "Running bundle exec rake db:drop"
 bundle exec rake db:drop
+echo "Running bundle exec rake db:create"
 bundle exec rake db:create
+echo "Running bundle exec rake db:migrate"
 bundle exec rake db:migrate
 
 if (( $# != 1 ))
