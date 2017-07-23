@@ -6,7 +6,7 @@ echo "Waiting for mysql"
 
 COUNT=1
 
-until mysql -h mysqldb -P 3306 -uroot --password=secret &> /dev/null
+until mysql -h mysqldddb -P 3306 -uroot --password=secret &> /dev/null
 do
   printf "."
   if [[ $COUNT -gt $TIMEOUT ]]; then
