@@ -10,7 +10,6 @@ pipeline {
         GIT_COMMIT          = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
         GIT_COMMIT_SHORT    = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
         GIT_MESSAGE         = sh(returnStdout: true, script: 'git --no-pager show -s --format="%s (%an <%ae>) %H"').trim()
-        TEST_DATABASE_URL   = 'mysql2://root:secret@db:3306/jenkins_test'
     }
     stages {
       stage('Build') {
@@ -21,8 +20,7 @@ pipeline {
       stage('Prepare DB') {
         steps {
           sh "docker network create -d bridge net.$env.BUILD_TAG"
-          sh "docker run --network net.$env.BUILD_TAG --network-alias redis --name redis.$env.BUILD_TAG -d redis:3.0.6"
-          sh "docker run --network net.$env.BUILD_TAG --network-alias db --name mysql.$env.BUILD_TAG -e MYSQL_ROOT_PASSWORD=secret -d mysql:5.6.28"
+          sh "docker run --network net.$env.BUILD_TAG --network-alias mysqldb --name mysql.$env.BUILD_TAG -e MYSQL_ROOT_PASSWORD=secret -d mysql:5.6.28"
           sh "docker run --rm --network net.$env.BUILD_TAG app.$env.BUILD_TAG bin/wait-for-mysql"
         }
       }
