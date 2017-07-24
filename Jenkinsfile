@@ -16,7 +16,7 @@ pipeline {
         BUBU_TAG_4          = "hello $env.GIT_COMMIT_SHORT"
         BUBU_TAG_5          = "hello-${GIT_COMMIT_SHORT}"
         BUBU_TAG_51         = "hello-${BUILD_NUMBER}"
-        BUBU_TAG_52         = "hello\-$env.BUILD_NUMBER"
+        BUBU_TAG_52         = "hello-$env.BUILD_NUMBER"
         BUBU_TAG_6          = [ $env.GIT_REPO, ${GIT_COMMIT_SHORT}, $env.BUILD_NUMBER ].join('-')
         BUBU_TAG_7          = [ "${GIT_REPO}", "${GIT_COMMIT_SHORT}", "$env.BUILD_NUMBER" ].join('-')
         BUBU_TAG_8          = "hello 7"
