@@ -10,17 +10,7 @@ pipeline {
         GIT_COMMIT          = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
         GIT_COMMIT_SHORT    = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
         GIT_MESSAGE         = sh(returnStdout: true, script: 'git --no-pager show -s --format="%s (%an <%ae>) %H"').trim()
-        BUBU_TAG_1          = "hello 1"
-        BUBU_TAG_2          = "hello $env.BUILD_NUMBER"
-        BUBU_TAG_3          = "hello ${GIT_COMMIT_SHORT}"
-        BUBU_TAG_4          = "hello $env.GIT_COMMIT_SHORT"
-        BUBU_TAG_5          = "hello-${GIT_COMMIT_SHORT}"
-        BUBU_TAG_51         = "hello-${BUILD_NUMBER}"
-        BUBU_TAG_52         = "hello-$env.BUILD_NUMBER"
-        BUBU_TAG_6          = "${GIT_REPO}-${GIT_COMMIT_SHORT}-${BUILD_NUMBER}"
-        BUBU_TAG_7          = [ "${GIT_REPO}", "${GIT_COMMIT_SHORT}", "$env.BUILD_NUMBER" ].join('-')
-        BUBU_TAG_8          = "hello 7"
-        BUBU_TAG_9          = "${GIT_REPO}"
+        CUSTOM_TAG          = "${GIT_REPO}-${GIT_COMMIT_SHORT}-${BUILD_NUMBER}"
     }
     stages {
       stage('Print ENV') {
