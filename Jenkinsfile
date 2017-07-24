@@ -14,6 +14,7 @@ pipeline {
         BUBU_TAG_2          = "hello $env.BUILD_NUMBER"
         BUBU_TAG_3          = "hello ${GIT_COMMIT_SHORT}"
         BUBU_TAG_4          = "hello $env.GIT_COMMIT_SHORT"
+        BUBU_TAG_5          = "poblano-${GIT_COMMIT_SHORT}-$env.BUILD_NUMBER"
     }
     stages {
       stage('Print ENV') {
