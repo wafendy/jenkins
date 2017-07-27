@@ -12,6 +12,7 @@ default: &default
 development:
   <<: *default
   database: jenkins_dev
+  username: root
   url: <%= ENV['DATABASE_URL'] %>
 
 # Warning: The database defined as "test" will be erased and
