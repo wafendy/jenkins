@@ -18,6 +18,11 @@ pipeline {
           sh "env | sort"
         }
       }
+      stage('Test') {
+        def abc = ['a', 'b', 'c']
+        def con = abc.join('::')
+        echo "Hello $con" 
+      }
       stage('Build') {
         steps {
           sh "docker build . -t app.$env.BUILD_TAG"
