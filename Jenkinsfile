@@ -19,9 +19,11 @@ pipeline {
         }
       }
       stage('Test') {
-        def abc = ['a', 'b', 'c']
-        def con = abc.join('::')
-        echo "Hello $con" 
+        steps {
+          def abc = ['a', 'b', 'c']
+          def con = abc.join('::')
+          echo "Hello $con"
+        }
       }
       stage('Build') {
         steps {
