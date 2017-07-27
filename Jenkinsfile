@@ -20,9 +20,7 @@ pipeline {
       }
       stage('Test') {
         steps {
-          def abc = ['a', 'b', 'c']
-          def con = abc.join('::')
-          echo "Hello $con"
+          echo "Hello ${helloboy()}"
         }
       }
       stage('Build') {
@@ -68,4 +66,10 @@ pipeline {
         sh "docker network rm net.$env.BUILD_TAG"
       }
     }
+}
+
+def helloboy {
+  def abc = ['a', 'b', 'c']
+  def con = abc.join('::')
+  return con
 }
