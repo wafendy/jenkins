@@ -68,7 +68,7 @@ pipeline {
     }
 }
 
-def helloboy {
+def helloboy() {
   def abc = ['a', 'b', 'c']
   def con = abc.join('::')
   return con
