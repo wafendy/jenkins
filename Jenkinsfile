@@ -6,6 +6,8 @@ pipeline {
         AGENT               = 'jenkins-us-east-node-with-docker'
         AWS_DEFAULT_REGION  = 'us-east-1'
         GIT_REPO            = 'poblano'
+        DIRTY_BRANCH_NAME   = 'poblano-staging/tech-debt%2Fjenkins-declarative-pipeline/tech%2Fjenkins/tech%2Fjenkins%3Fjenkins'
+        CLEAN_BRANCH_NAME   = sh(returnStdout: true, script: "${DIRTY_BRANCH_NAME}").trim()
         STAGING_URL         = 'https://pob-stag1-console.pm-staging.net'
         GIT_COMMIT          = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
         GIT_COMMIT_SHORT    = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
