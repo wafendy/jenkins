@@ -7,7 +7,10 @@ pipeline {
         AWS_DEFAULT_REGION  = 'us-east-1'
         GIT_REPO            = 'poblano'
         DIRTY_BRANCH_NAME   = 'poblano-staging/tech-debt%2Fjenkins-declarative-pipeline/tech%2Fjenkins/tech%2Fjenkins%3Fjenkins'
-        CLEAN_BRANCH_NAME   = sh(returnStdout: true, script: "echo ${DIRTY_BRANCH_NAME}").trim()
+        CLEAN_BRANCH_NAME1   = sh(returnStdout: true, script: "echo ${DIRTY_BRANCH_NAME}").trim()
+        CLEAN_BRANCH_NAME2   = sh(returnStdout: true, script: "echo $DIRTY_BRANCH_NAME").trim()
+        CLEAN_BRANCH_NAME3   = sh(returnStdout: true, script: "echo \"$DIRTY_BRANCH_NAME\"").trim()
+        CLEAN_BRANCH_NAME4   = sh(returnStdout: true, script: "echo $env.DIRTY_BRANCH_NAME").trim()
         STAGING_URL         = 'https://pob-stag1-console.pm-staging.net'
         GIT_COMMIT          = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
         GIT_COMMIT_SHORT    = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
