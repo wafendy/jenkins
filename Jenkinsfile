@@ -58,12 +58,12 @@ pipeline {
       // }
     }
 
-    post {
-      always {
-        sh "docker container stop mysql.$env.BUILD_TAG"
-        sh "docker container rm -v mysql.$env.BUILD_TAG"
-        sh "docker image rm app.$env.BUILD_TAG"
-        sh "docker network rm net.$env.BUILD_TAG"
-      }
-    }
+    // post {
+    //   always {
+    //     sh "docker container stop mysql.$env.BUILD_TAG"
+    //     sh "docker container rm -v mysql.$env.BUILD_TAG"
+    //     sh "docker image rm app.$env.BUILD_TAG"
+    //     sh "docker network rm net.$env.BUILD_TAG"
+    //   }
+    // }
 }
