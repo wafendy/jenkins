@@ -14,8 +14,7 @@ pipeline {
         CLEAN_BRANCH_NAME5   = sh(returnStdout: true, script: "$env.DIRTY_BRANCH_NAME").trim()
         CLEAN_BRANCH_NAME6   = sh(returnStdout: true, script: "$DIRTY_BRANCH_NAME").trim()
         CLEAN_BRANCH_NAME7   = sh(returnStdout: true, script: "${DIRTY_BRANCH_NAME}").trim()
-        CLEAN_BRANCH_NAME8   = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
-        CLEAN_BRANCH_NAME9   = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+        CLEAN_BRANCH_NAME8   = sh(returnStdout: true, script: "").trim()
 
         STAGING_URL         = 'https://pob-stag1-console.pm-staging.net'
         GIT_COMMIT          = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
@@ -26,6 +25,11 @@ pipeline {
     stages {
       stage('Print ENV') {
         steps {
+          GIT_COMMIT_EMAIL = sh (
+              script: 'git --no-pager show -s --format=\'%ae\'',
+              returnStdout: true
+          ).trim()
+          echo "Git committer email: ${GIT_COMMIT_EMAIL}"
           sh "env | sort"
         }
       }
