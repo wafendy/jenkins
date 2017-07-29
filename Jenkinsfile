@@ -25,7 +25,7 @@ pipeline {
     stages {
       stage('Print ENV') {
         steps {
-          GIT_COMMIT_EMAIL = sh (
+          def GIT_COMMIT_EMAIL = sh (
               script: 'git --no-pager show -s --format=\'%ae\'',
               returnStdout: true
           ).trim()
