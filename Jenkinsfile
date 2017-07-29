@@ -26,6 +26,7 @@ pipeline {
       stage('Print ENV') {
         steps {
           echo "Git committer email: ${DIRTY_BRANCH_NAME}"
+          echo "${DIRTY_BRANCH_NAME//%2F/-}"
           sh "env | sort"
         }
       }
