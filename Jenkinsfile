@@ -14,7 +14,7 @@ pipeline {
         CLEAN_BRANCH_NAME5   = sh(returnStdout: true, script: "$env.DIRTY_BRANCH_NAME").trim()
         CLEAN_BRANCH_NAME6   = sh(returnStdout: true, script: "$DIRTY_BRANCH_NAME").trim()
         CLEAN_BRANCH_NAME7   = sh(returnStdout: true, script: "${DIRTY_BRANCH_NAME}").trim()
-        CLEAN_BRANCH_NAME8   = sh(returnStdout: true, script: "echo 'SHIT'").trim()
+        CLEAN_BRANCH_NAME8   = sh(returnStdout: true, script: "env").trim()
 
         STAGING_URL         = 'https://pob-stag1-console.pm-staging.net'
         GIT_COMMIT          = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
