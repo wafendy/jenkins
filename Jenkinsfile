@@ -1,19 +1,11 @@
 #!groovy
 
 pipeline {
-    agent { label 'master' }
+    agent none
     environment {
         AGENT               = 'jenkins-us-east-node-with-docker'
         AWS_DEFAULT_REGION  = 'us-east-1'
         GIT_REPO            = 'poblano'
-        DIRTY_BRANCH_NAME   = 'poblano-staging/tech-debt%2Fjenkins-declarative-pipeline/tech%2Fjenkins/tech%2Fjenkins%3Fjenkins'
-        CLEAN_BRANCH_NAME1   = sh(returnStdout: true, script: "echo ${BUILD_TAG}").trim()
-        CLEAN_BRANCH_NAME2   = sh(returnStdout: true, script: "echo $BUILD_TAG").trim()
-        CLEAN_BRANCH_NAME3   = sh(returnStdout: true, script: "echo \"$BUILD_TAG\"").trim()
-        CLEAN_BRANCH_NAME4   = sh(returnStdout: true, script: "echo $env.BUILD_TAG").trim()
-        CLEAN_BRANCH_NAME5   = sh(returnStdout: true, script: "$env.BUILD_TAG").trim()
-        CLEAN_BRANCH_NAME6   = sh(returnStdout: true, script: "$BUILD_TAG").trim()
-        CLEAN_BRANCH_NAME7   = DIRTY_BRANCH_NAME.replace("/", "-").replace("%2F", "-")
         CLEAN_JOB_NAME      = JOB_NAME.replace("/", "-").replace("%2F", "-")
         STAGING_URL         = 'https://pob-stag1-console.pm-staging.net'
         GIT_COMMIT          = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
@@ -22,53 +14,76 @@ pipeline {
         CUSTOM_TAG          = "${GIT_REPO}-${GIT_COMMIT_SHORT}-${BUILD_NUMBER}"
     }
     stages {
-      stage('Print ENV') {
+      stage('Build') {
+        agent { label 'master' }
         steps {
-          sh "echo ${DIRTY_BRANCH_NAME} | sed 's|%2F|-|g' | sed 's|/|-|g'"
-          sh "env | sort"
+          sh "docker build . -t app.$env.BUILD_TAG"
         }
       }
-      // stage('Build') {
-      //   steps {
-      //     sh "docker build . -t app.$env.BUILD_TAG"
-      //   }
-      // }
-      // stage('Prepare DB') {
-      //   steps {
-      //     sh "docker network create -d bridge net.$env.BUILD_TAG"
-      //     sh "docker run --network net.$env.BUILD_TAG --network-alias mysqldb --name mysql.$env.BUILD_TAG -e MYSQL_ROOT_PASSWORD=secret -d mysql:5.6.28"
-      //     sh "docker run --rm --network net.$env.BUILD_TAG app.$env.BUILD_TAG bin/wait-for-mysql"
-      //   }
-      // }
-      // stage('Test') {
-      //   steps {
-      //     parallel (
-      //       "Models" : {
-      //         sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG bin/test models"
-      //       },
-      //       "Controllers" : {
-      //         sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG bin/test controllers"
-      //       },
-      //       "Integration" : {
-      //         sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG bin/test integration"
-      //       },
-      //       "Mailers" : {
-      //         sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG bin/test mailers"
-      //       },
-      //       "System" : {
-      //         sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG bin/test system"
-      //       }
-      //     )
-      //   }
-      // }
+      stage('Prepare DB') {
+        agent { label 'master' }
+        steps {
+          sh "docker network create -d bridge net.$env.BUILD_TAG"
+          sh "docker run --network net.$env.BUILD_TAG --network-alias mysqldb --name mysql.$env.BUILD_TAG -e MYSQL_ROOT_PASSWORD=secret -d mysql:5.6.28"
+          sh "docker run --rm --network net.$env.BUILD_TAG app.$env.BUILD_TAG bin/wait-for-mysql"
+        }
+      }
+      stage('Test') {
+        agent { label 'master' }
+        steps {
+          parallel (
+            "Models" : {
+              sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG bin/test models"
+            },
+            "Controllers" : {
+              sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG bin/test controllers"
+            },
+            "Integration" : {
+              sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG bin/test integration"
+            },
+            "Mailers" : {
+              sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG bin/test mailers"
+            },
+            "System" : {
+              sh "docker run --rm --network net.$env.BUILD_TAG -e RAILS_ENV=test app.$env.BUILD_TAG bin/test system"
+            }
+          )
+        }
+      }
+      stage('Deploy?') {
+        agent none
+        steps {
+          script {
+            env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
+                                      parameters: [choice(name: 'RELEASE_SCOPE', choices: 'patch\nminor\nmajor', description: 'What is the release scope?')]
+          }
+        }
+      }
+      stage('Deploy to Staging') {
+        agent { label 'master' }
+        when {
+          not { branch 'master' }
+        }
+        steps {
+          echo 'Deploying to Staging'
+        }
+      }
+      stage('Deploy to Master') {
+        agent { label 'master' }
+        when {
+          branch 'master'
+        }
+        steps {
+          echo 'Deploying to Master'
+        }
+      }
     }
 
-    // post {
-    //   always {
-    //     sh "docker container stop mysql.$env.BUILD_TAG"
-    //     sh "docker container rm -v mysql.$env.BUILD_TAG"
-    //     sh "docker image rm app.$env.BUILD_TAG"
-    //     sh "docker network rm net.$env.BUILD_TAG"
-    //   }
-    // }
+    post {
+      always {
+        sh "docker container rm -fv mysql.$env.BUILD_TAG"
+        sh "docker image rm app.$env.BUILD_TAG"
+        sh "docker network rm net.$env.BUILD_TAG"
+      }
+    }
 }
