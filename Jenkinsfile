@@ -50,15 +50,15 @@ pipeline {
           )
         }
       }
-      stage('Deploy?') {
-        agent none
-        steps {
-          script {
-            env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
-                                      parameters: [choice(name: 'RELEASE_SCOPE', choices: 'patch\nminor\nmajor', description: 'What is the release scope?')]
-          }
-        }
-      }
+      // stage('Deploy?') {
+      //   agent none
+      //   steps {
+      //     script {
+      //       env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
+      //                                 parameters: [choice(name: 'RELEASE_SCOPE', choices: 'patch\nminor\nmajor', description: 'What is the release scope?')]
+      //     }
+      //   }
+      // }
       stage('Deploy to Staging') {
         agent { label 'master' }
         when {
