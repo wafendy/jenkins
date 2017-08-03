@@ -17,20 +17,19 @@ pipeline{
             echo "finishing Test"
           }
         }
-        stage ("Promote"){
+        stage ("Promote?"){
           steps {
             milestone (20)
             script {
               env.USER_INPUT = input id: "1", message: 'Deploy?', ok: 'Go Die!',parameters: [
                 [$class: 'BooleanParameterDefinition', defaultValue: false, description: '', name: 'Please confirm you agree with this']
               ]
+              echo env.USER_INPUT
             }
             milestone (30)
-            echo "finishing Deploy ${env.USER_INPUT}"
           }
         }
         stage ("Deploying") {
-          when { expression { env.USER_INPUT == 'Proceed' } }
           steps {
             echo "Deploying to staging"
           }
