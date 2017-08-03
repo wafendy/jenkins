@@ -21,8 +21,8 @@ pipeline{
           steps {
             milestone (20)
             script {
-              env.USER_INPUT = input message: 'Deploy?', ok: 'Go Die!'
-              echo "env.USER_INPUT: ${USER_INPUT}"
+              def test = input message: 'Deploy?', ok: 'Go Die!'
+              echo "env.USER_INPUT: ${test}"
             }
             milestone (30)
           }
