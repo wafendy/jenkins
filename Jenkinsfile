@@ -21,7 +21,9 @@ pipeline{
           steps {
             milestone (20)
             script {
-              env.USER_INPUT = input id: "1", message: 'Deploy?', ok: 'Go Die!'
+              env.USER_INPUT = input id: "1", message: 'Deploy?', ok: 'Go Die!',parameters: [
+                [$class: 'TextParameterDefinition', defaultValue: 'uat', description: 'Environment', name: 'env']
+              ]
             }
             milestone (30)
             echo "finishing Deploy ${env.USER_INPUT}"
