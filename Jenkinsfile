@@ -50,12 +50,12 @@ pipeline {
       }
       stage('Deploy?') {
         steps {
-          milestone 1
+          milestone 111
           script {
             env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
                                       parameters: [choice(name: 'RELEASE_SCOPE', choices: 'patch\nminor\nmajor', description: 'What is the release scope?')]
           }
-          milestone 2
+          milestone 222
         }
       }
       stage('Deploy to Staging') {
