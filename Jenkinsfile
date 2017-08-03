@@ -21,10 +21,8 @@ pipeline{
           steps {
             milestone (20)
             script {
-              env.USER_INPUT = input id: "1", message: 'Deploy?', ok: 'Go Die!',parameters: [
-                [$class: 'BooleanParameterDefinition', defaultValue: false, description: '', name: 'Please confirm you agree with this']
-              ]
-              echo env.USER_INPUT
+              env.USER_INPUT = input id: "1", message: 'Deploy?', ok: 'Go Die!'
+              echo "env.USER_INPUT: ${env.USER_INPUT}"
             }
             milestone (30)
           }
