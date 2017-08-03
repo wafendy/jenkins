@@ -20,7 +20,7 @@ pipeline{
         stage ("Deploy"){
           steps {
             milestone (20)
-            input id: 1, message: 'Deploy?', ok: 'Go Die!'
+            input id: "1", message: 'Deploy?', ok: 'Go Die!'
             echo "finishing Deploy"
           }
         }
