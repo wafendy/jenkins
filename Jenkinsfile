@@ -22,7 +22,7 @@ pipeline{
             milestone (20)
             script {
               env.USER_INPUT = input id: "1", message: 'Deploy?', ok: 'Go Die!',parameters: [
-                [$class: 'TextParameterDefinition', defaultValue: 'uat', description: 'Environment', name: 'env']
+                [$class: 'BooleanParameterDefinition', defaultValue: false, description: '', name: 'Please confirm you agree with this']
               ]
             }
             milestone (30)
