@@ -20,7 +20,7 @@ pipeline{
         stage ("Deploy"){
           steps {
             milestone (20)
-            sleep getTime()
+            input message: 'Deploy?', ok: 'Go Die!'
             echo "finishing Deploy"
           }
         }
