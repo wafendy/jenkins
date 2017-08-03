@@ -16,6 +16,7 @@ pipeline {
     stages {
       stage('Build') {
         steps {
+          sh "GIT_MESSAGE: $env.GIT_MESSAGE"
           sh "docker build . -t app.$env.BUILD_TAG"
         }
       }
