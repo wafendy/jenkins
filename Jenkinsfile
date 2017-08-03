@@ -21,15 +21,16 @@ pipeline{
           steps {
             milestone (20)
             script {
-              def test = input message: 'Deploy?', ok: 'Go Die!'
-              echo "env.USER_INPUT: ${test}"
+              input message: 'Deploy?', ok: 'Go Die!'
             }
             milestone (30)
           }
         }
         stage ("Deploying") {
           steps {
-            echo "Deploying to staging"
+            echo "=================================="
+            echo "==============Deploying to staging"
+            echo "=================================="
           }
         }
     }
