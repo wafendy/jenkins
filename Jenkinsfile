@@ -50,40 +50,38 @@ pipeline {
           )
         }
       }
-      // stage('Deploy?') {
-      //   agent none
-      //   steps {
-      //     script {
-      //       env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
-      //                                 parameters: [choice(name: 'RELEASE_SCOPE', choices: 'patch\nminor\nmajor', description: 'What is the release scope?')]
-      //     }
-      //   }
-      // }
+      stage('Deploy?') {
+        agent none
+        steps {
+          milestone 1
+          script {
+            env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
+                                      parameters: [choice(name: 'RELEASE_SCOPE', choices: 'patch\nminor\nmajor', description: 'What is the release scope?')]
+          }
+          milestone 2
+        }
+      }
       stage('Deploy to Staging') {
         agent { label 'master' }
         when {
           not { branch 'master' }
+          expression { env.RELEASE_SCOPE == 'patch' }
         }
         steps {
           echo 'Deploying to Staging'
-        }
-      }
-      stage('Deploy to Master') {
-        agent { label 'master' }
-        when {
-          branch 'master'
-        }
-        steps {
-          echo 'Deploying to Master'
         }
       }
     }
 
     post {
       always {
-        sh "docker container rm -fv mysql.$env.BUILD_TAG"
-        sh "docker image rm app.$env.BUILD_TAG"
-        sh "docker network rm net.$env.BUILD_TAG"
+        node('master') {
+          steps{
+            sh "docker container rm -fv mysql.$env.BUILD_TAG"
+            sh "docker image rm app.$env.BUILD_TAG"
+            sh "docker network rm net.$env.BUILD_TAG"
+          }
+        }
       }
     }
 }
