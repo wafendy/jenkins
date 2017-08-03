@@ -1,7 +1,7 @@
 #!groovy
 
 pipeline {
-    agent none
+    agent { label 'master' }
     environment {
         AGENT               = 'jenkins-us-east-node-with-docker'
         AWS_DEFAULT_REGION  = 'us-east-1'
@@ -15,13 +15,11 @@ pipeline {
     }
     stages {
       stage('Build') {
-        agent { label 'master' }
         steps {
           sh "docker build . -t app.$env.BUILD_TAG"
         }
       }
       stage('Prepare DB') {
-        agent { label 'master' }
         steps {
           sh "docker network create -d bridge net.$env.BUILD_TAG"
           sh "docker run --network net.$env.BUILD_TAG --network-alias mysqldb --name mysql.$env.BUILD_TAG -e MYSQL_ROOT_PASSWORD=secret -d mysql:5.6.28"
@@ -29,7 +27,6 @@ pipeline {
         }
       }
       stage('Test') {
-        agent { label 'master' }
         steps {
           parallel (
             "Models" : {
@@ -51,7 +48,6 @@ pipeline {
         }
       }
       stage('Deploy?') {
-        agent none
         steps {
           milestone 1
           script {
@@ -62,7 +58,6 @@ pipeline {
         }
       }
       stage('Deploy to Staging') {
-        agent { label 'master' }
         when {
           not { branch 'master' } //Safety
           expression { env.RELEASE_SCOPE == 'patch' }
@@ -75,12 +70,10 @@ pipeline {
 
     post {
       always {
-        node('master') {
-          steps{
-            sh "docker container rm -fv mysql.$env.BUILD_TAG"
-            sh "docker image rm app.$env.BUILD_TAG"
-            sh "docker network rm net.$env.BUILD_TAG"
-          }
+        steps{
+          sh "docker container rm -fv mysql.$env.BUILD_TAG"
+          sh "docker image rm app.$env.BUILD_TAG"
+          sh "docker network rm net.$env.BUILD_TAG"
         }
       }
     }
