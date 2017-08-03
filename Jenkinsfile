@@ -20,7 +20,7 @@ pipeline{
         stage ("Promote?"){
           steps {
             milestone (20)
-            script {
+            timeout(time: 10, unit: 'SECONDS') {
               input message: 'Deploy?', ok: 'Go Die!'
             }
             milestone (30)
