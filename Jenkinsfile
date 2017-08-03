@@ -1,19 +1,34 @@
 #!groovy
 
-pipeline {
-  agent { label 'master' }
-  stages {
-    stage('checkout repo') {
-      steps {
-        checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: "origin/single"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'single']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/wafendy/jenkins.git']]]
-      }
-    }
-    stage('build') {
-      steps {
-        dir ('single') {
-            sh 'bin/docker-test'
+pipeline{
+    agent none
+    stages{
+        stage ("Build"){
+            milestone(1)
+            sleep getTime()
+            echo "finishing build"
         }
-      }
+        stage ("Test"){
+            milestone (10)
+            sleep getTime()
+            echo "finishing Test"
+        }
+        stage ("Deploy"){
+            milestone (20)
+            sleep getTime()
+            echo "finishing Deploy"
+        }
     }
-  }
+}
+
+
+
+@NonCPS
+def getTime() {
+    if (currentBuild.number % 2 != 0){
+        return 10
+    }
+    else{
+        return 5
+    }
 }
