@@ -17,11 +17,17 @@ pipeline{
             echo "finishing Test"
           }
         }
-        stage ("Deploy"){
+        stage ("Promote"){
           steps {
             milestone (20)
-            input id: "1", message: 'Deploy?', ok: 'Go Die!'
-            echo "finishing Deploy"
+            env.USER_INPUT = input id: "1", message: 'Deploy?', ok: 'Go Die!'
+            echo "finishing Deploy ${env.USER_INPUT}"
+          }
+        }
+        stage ("Deploying") {
+          when { expression { env.USER_INPUT == 'Proceed' } }
+          steps {
+            echo "Deploying to staging"
           }
         }
     }
