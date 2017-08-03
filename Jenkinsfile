@@ -64,7 +64,7 @@ pipeline {
       stage('Deploy to Staging') {
         agent { label 'master' }
         when {
-          not { branch 'master' }
+          not { branch 'master' } //Safety
           expression { env.RELEASE_SCOPE == 'patch' }
         }
         steps {
